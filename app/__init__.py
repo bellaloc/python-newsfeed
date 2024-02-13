@@ -13,11 +13,8 @@ def create_app(test_config=None):
     def hello():
         return 'hello world'
 
-    # register routes
-    from .routes.home import bp as home_blueprint
-    app.register_blueprint(home_blueprint)
-
-    # register other blueprints
+    # Register blueprints
+    app.register_blueprint(home_bp)
     app.register_blueprint(dashboard_bp)
 
     return app
