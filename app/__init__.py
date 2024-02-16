@@ -9,7 +9,7 @@ def create_app(test_config=None):
     app.url_map.strict_slashes = False
     app.jinja_env.filters['format_url'] = filters.format_url
     app.jinja_env.filters['format_date'] = filters.format_date
-    app.jinja_env.filters['format_plural'] = filters.format_plural  # Fixed indentation here
+    app.jinja_env.filters['format_plural'] = filters.format_plural
     app.config.from_mapping(
         SECRET_KEY='super_secret_key'
     )
@@ -19,13 +19,12 @@ def create_app(test_config=None):
         return 'hello world'
 
     # Register routes
-    from .routes.home import bp as home_blueprint
-    app.register_blueprint(home_blueprint)
-
-    # Register other blueprints
+    app.register_blueprint(home_bp)  # Adjusted this line to use home_bp directly
     app.register_blueprint(dashboard_bp)
 
     # Initialize the database
     init_db(app)
 
     return app
+
+  
