@@ -1,6 +1,7 @@
 from flask import Flask
 from app.routes.home import bp as home_bp
 from app.routes.dashboard import bp as dashboard_bp
+from app.db import init_db
 
 def create_app(test_config=None):
     app = Flask(__name__, static_url_path='/')
@@ -19,5 +20,7 @@ def create_app(test_config=None):
 
     # register other blueprints
     app.register_blueprint(dashboard_bp)
+
+    init_db()
 
     return app
