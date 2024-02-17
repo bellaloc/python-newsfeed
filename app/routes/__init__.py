@@ -1,12 +1,14 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from app.routes.home import bp as home_bp
 from app.routes.dashboard import bp as dashboard_bp
-from .home import bp as home
-from .dashboard import bp as dashboard
-from app.routes import home, dashboard
+from app.routes.api import bp as api_bp
 
-app = Flask(__name__)
+# Create a new blueprint for API
+api_blueprint = Blueprint('api', __name__)
 
-# Register blueprints
-app.register_blueprint(home_bp)
-app.register_blueprint(dashboard_bp)
+# Register blueprints with the application
+def register_blueprints(app):
+    app.register_blueprint(home_bp)
+    app.register_blueprint(dashboard_bp)
+    app.register_blueprint(api_bp)
+    app.register_blueprint(api_blueprint)

@@ -1,6 +1,5 @@
 from flask import Flask
-from app.routes.home import bp as home_bp
-from app.routes.dashboard import bp as dashboard_bp
+from app.routes import home_bp, dashboard_bp, api_bp  # Importing blueprints from routes package
 from app.db import init_db  # Import the init_db function
 from app.utils import filters
 
@@ -18,13 +17,12 @@ def create_app(test_config=None):
     def hello():
         return 'hello world'
 
-    # Register routes
-    app.register_blueprint(home_bp)  # Adjusted this line to use home_bp directly
+    # Register blueprints
+    app.register_blueprint(home_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(api_bp)
 
     # Initialize the database
     init_db(app)
 
     return app
-
-  
