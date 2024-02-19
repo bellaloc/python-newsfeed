@@ -1,6 +1,6 @@
 from app.db import Base
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import relationship
 import bcrypt
 
 class User(Base):
@@ -9,6 +9,9 @@ class User(Base):
     username = Column(String(50), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
     _password = Column('password', String(100), nullable=False)
+    votes = relationship('Vote', back_populates='user')  # Assuming 'user' is the back reference name
+    posts = relationship('Post', back_populates='user')  # Define relationship with Post model
+    comments = relationship('Comment', back_populates='user')  # Add this line to establish the comments relationship
 
     @property
     def password(self):
@@ -19,13 +22,5 @@ class User(Base):
         assert len(password) > 4
         self._password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    @validates('email')
-    def validate_email(self, key, email):
-        assert '@' in email
-        return email
-    
     def verify_password(self, password):
-        return bcrypt.checkpw(
-    password.encode('utf-8'),
-    self.password.encode('utf-8')
-  )
+        return bcrypt.checkpw(password.encode('utf-8'), self._password.encode('utf-8'))
