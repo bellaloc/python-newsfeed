@@ -11,7 +11,6 @@ def signup():
     db = get_db()
 
     try:
-        # attempt creating a new user
         new_user = User(
             username=data['username'],
             email=data['email'],
@@ -33,7 +32,6 @@ def signup():
 
 @bp.route('/users/logout', methods=['POST'])
 def logout():
-    # remove session variables
     session.clear()
     return '', 204
 
@@ -44,7 +42,6 @@ def login():
 
     try:
         user = db.query(User).filter(User.email == data['email']).one()
-        # Check if password matches
         if user.password == data['password']:
             session.clear()
             session['user_id'] = user.id
@@ -60,22 +57,22 @@ def login():
 def comment():
     data = request.get_json()
     db = get_db()
-
     try:
-        # create a new comment
-        newComment = Comment(
-            text=data['comment_text'],  # Use 'text' instead of 'comment_text'
+        # Create a new comment
+        new_comment = Comment(
+            text=data['comment_text'],  # Assuming 'text' is the correct attribute for comment text
             post_id=data['post_id'],
             user_id=session.get('user_id')
         )
 
-        db.add(newComment)
+        db.add(new_comment)
         db.commit()
-        return jsonify(id=newComment.id, message='Comment added successfully')
+        return jsonify(id=new_comment.id)
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Comment failed'), 500
+
 
 @bp.route('/posts/upvote', methods=['PUT'])
 def upvote():
@@ -83,20 +80,18 @@ def upvote():
     db = get_db()
 
     try:
-        # create a new vote with incoming id and session id
-        newVote = Vote(
+        new_vote = Vote(
             post_id=data['post_id'],
             user_id=session.get('user_id')
         )
 
-        db.add(newVote)
+        db.add(new_vote)
         db.commit()
+        return '', 204
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Upvote failed'), 500
-
-    return '', 204
 
 @bp.route('/posts', methods=['POST'])
 def create():
@@ -104,21 +99,21 @@ def create():
     db = get_db()
 
     try:
-        # create a new post
-        newPost = Post(
+        new_post = Post(
             title=data['title'],
             post_url=data['post_url'],
             user_id=session.get('user_id')
         )
 
-        db.add(newPost)
+        db.add(new_post)
         db.commit()
+        return jsonify(id=new_post.id)
+    except KeyError as e:
+        return jsonify(message=f'Missing required field: {e.args[0]}'), 400
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Post failed'), 500
-
-    return jsonify(id=newPost.id)
 
 @bp.route('/posts/<id>', methods=['PUT'])
 def update(id):
@@ -126,28 +121,24 @@ def update(id):
     db = get_db()
 
     try:
-        # retrieve post and update title property
         post = db.query(Post).filter(Post.id == id).one()
         post.title = data['title']
         db.commit()
+        return '', 204
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Post not found'), 404
-
-    return '', 204
 
 @bp.route('/posts/<id>', methods=['DELETE'])
 def delete(id):
     db = get_db()
 
     try:
-        # delete post from db
         db.delete(db.query(Post).filter(Post.id == id).one())
         db.commit()
+        return '', 204
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Post not found'), 404
-
-    return '', 204
