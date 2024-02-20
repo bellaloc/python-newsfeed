@@ -1,14 +1,16 @@
 from app.db import Base
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import relationship, validates
 import bcrypt
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(50), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
     _password = Column('password', String(100), nullable=False)
+
+    comments = relationship("Comment", back_populates="user")
 
     @property
     def password(self):
@@ -26,6 +28,6 @@ class User(Base):
     
     def verify_password(self, password):
         return bcrypt.checkpw(
-    password.encode('utf-8'),
-    self.password.encode('utf-8')
-  )
+            password.encode('utf-8'),
+            self.password.encode('utf-8')
+        )
