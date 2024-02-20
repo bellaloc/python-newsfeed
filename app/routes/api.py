@@ -73,7 +73,6 @@ def comment():
         db.rollback()
         return jsonify(message='Comment failed'), 500
 
-
 @bp.route('/posts/upvote', methods=['PUT'])
 def upvote():
     data = request.get_json()

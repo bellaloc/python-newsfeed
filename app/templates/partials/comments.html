@@ -5,7 +5,7 @@
       {{comment.user.username}} on {{comment.created_at|format_date}}
     </div>
     <div class="text">
-      {{comment.comment_text}}
+      {{comment.text}} <!-- Corrected attribute name -->
     </div>
   </section>
   {% endfor %}
