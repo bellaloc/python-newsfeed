@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 from .db import Base
+from sqlalchemy import Column, Integer, String
 
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    
-    articles = relationship("Article", back_populates="author")
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(50), nullable=False, unique=True)
+    email = Column(String(100), nullable=False, unique=True)
+    password = Column(String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
