@@ -45,5 +45,4 @@ libclang==16.0.6
 markdown==3.5.2
 markupsafe==2.1.5
 ml-dtypes==0.2.0
-numpy~=1.23.5
-
+numpy~=1.23.3
