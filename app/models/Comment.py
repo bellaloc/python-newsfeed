@@ -13,6 +13,5 @@ class Comment(Base):
     post_id = Column(Integer, ForeignKey('posts.id'))
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    user = relationship('User')
-    post = relationship('Post')
-
+    user = relationship('User', back_populates='comments')  # Update this line
+    post = relationship('Post', back_populates='comments')  # Update this line
