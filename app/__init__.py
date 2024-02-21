@@ -1,21 +1,20 @@
-# Importing necessary modules
 import os
 from flask import Flask
-from app.routes import home_bp, dashboard_bp, api_bp  # Importing blueprints from routes package
-from app.db import init_db  # Import the init_db function
+from dotenv import load_dotenv, dotenv_values
+from app.routes import home_bp, dashboard_bp, api_bp
+from app.db import init_db
 from app.utils import filters
-from dotenv import dotenv_values
+
+# Load environment variables from .env file
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
 # Load environment variables from .env file
 env_vars = dotenv_values(".env")
 
 # Access specific environment variables
 db_url = env_vars.get("DB_URL")
-
-# Load environment variables from .env file
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
 
 def create_app(test_config=None):
     app = Flask(__name__, static_url_path='/')
@@ -24,11 +23,9 @@ def create_app(test_config=None):
     app.jinja_env.filters['format_date'] = filters.format_date
     app.jinja_env.filters['format_plural'] = filters.format_plural
     app.config.from_mapping(
-        SECRET_KEY='super_secret_key'
+        SECRET_KEY='super_secret_key',
+        SQLALCHEMY_DATABASE_URI=db_url  # Assuming you're using SQLAlchemy for database connection
     )
-
-    # Retrieve the value of the DB_URL environment variable
-    db_url = os.getenv("DB_URL")
 
     @app.route('/hello')
     def hello():

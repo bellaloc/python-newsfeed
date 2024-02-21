@@ -1,9 +1,10 @@
-# app/routes/home.py
-from flask import render_template, session, redirect, current_app
-from app.models import Post  # Import inside function to avoid circular import
-from app.routes import home_bp
+from flask import Blueprint, render_template, session, redirect
+from app.models import Post
+from app.db import get_db
 
-@home_bp.route('/')
+bp = Blueprint('home', __name__, url_prefix='/')
+
+@bp.route('/')
 def index():
     # get all posts
     db = get_db()
@@ -18,7 +19,7 @@ def index():
         loggedIn=session.get('loggedIn')
     )
 
-@home_bp.route('/login')
+@bp.route('/login')
 def login():
     # not logged in yet
     if session.get('loggedIn') is None:
@@ -26,7 +27,7 @@ def login():
 
     return redirect('/dashboard')
 
-@home_bp.route('/post/<id>')
+@bp.route('/post/<id>')
 def single(id):
     # get single post by id
     db = get_db()
