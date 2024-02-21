@@ -1,8 +1,13 @@
 from flask import Blueprint, render_template, session, redirect
 from app.models import Post
 from app.db import get_db
+from app.routes.home import home_bp
+from app.routes.dashboard import dashboard_bp
+from app.routes.api import api_bp
 
 bp = Blueprint('home', __name__, url_prefix='/')
+dashboard_bp = Blueprint('dashboard', __name__)
+api_bp = Blueprint('api', __name__)
 
 @bp.route('/')
 def index():
