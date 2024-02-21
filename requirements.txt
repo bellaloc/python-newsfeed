@@ -46,5 +46,6 @@ libclang==16.0.6
 markdown==3.5.2
 markupsafe==2.1.5
 ml-dtypes==0.2.0
+MySQL-python==1.2.5
 numpy~=1.23.3
 sqlalchemy
