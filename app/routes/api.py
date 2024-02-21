@@ -6,7 +6,7 @@ from app.utils.auth import login_required
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
-@bp.route('/users', methods=['POST'])
+@bp.route('/users/signup', methods=['POST'])
 def signup():
     data = request.get_json()
     db = get_db()
@@ -15,17 +15,12 @@ def signup():
         new_user = User(
             username=data['username'],
             email=data['email'],
-            password=data['password']
+            password=data['password']  # Assuming 'password' is provided in the request data
         )
 
         db.add(new_user)
         db.commit()
-
-        session.clear()
-        session['user_id'] = new_user.id
-        session['loggedIn'] = True
-
-        return jsonify(id=new_user.id)
+        return jsonify(id=new_user.id), 201
     except Exception as e:
         print(e)
         db.rollback()
@@ -46,13 +41,12 @@ def login():
         if user.password == data['password']:
             session.clear()
             session['user_id'] = user.id
-            session['loggedIn'] = True
-            return jsonify(id=user.id)
+            return jsonify(id=user.id), 200
         else:
             return jsonify(message='Incorrect credentials'), 400
     except Exception as e:
         print(e)
-        return jsonify(message='Incorrect credentials'), 400
+        return jsonify(message='Login failed'), 500
 
 @bp.route('/comments', methods=['POST'])
 @login_required
@@ -69,81 +63,10 @@ def comment():
 
         db.add(new_comment)
         db.commit()
-        return jsonify(id=new_comment.id)
+        return jsonify(id=new_comment.id), 201
     except Exception as e:
         print(e)
         db.rollback()
         return jsonify(message='Comment failed'), 500
 
-@bp.route('/posts/upvote', methods=['PUT'])
-@login_required
-def upvote():
-    data = request.get_json()
-    db = get_db()
-
-    try:
-        new_vote = Vote(
-            post_id=data['post_id'],
-            user_id=session.get('user_id')
-        )
-
-        db.add(new_vote)
-        db.commit()
-        return '', 204
-    except Exception as e:
-        print(e)
-        db.rollback()
-        return jsonify(message='Upvote failed'), 500
-
-@bp.route('/posts', methods=['POST'])
-@login_required
-def create():
-    data = request.get_json()
-    db = get_db()
-
-    try:
-        new_post = Post(
-            title=data['title'],
-            post_url=data['post_url'],
-            user_id=session.get('user_id')
-        )
-
-        db.add(new_post)
-        db.commit()
-        return jsonify(id=new_post.id)
-    except KeyError as e:
-        return jsonify(message=f'Missing required field: {e.args[0]}'), 400
-    except Exception as e:
-        print(e)
-        db.rollback()
-        return jsonify(message='Post failed'), 500
-
-@bp.route('/posts/<id>', methods=['PUT'])
-@login_required
-def update(id):
-    data = request.get_json()
-    db = get_db()
-
-    try:
-        post = db.query(Post).filter(Post.id == id).one()
-        post.title = data['title']
-        db.commit()
-        return '', 204
-    except Exception as e:
-        print(e)
-        db.rollback()
-        return jsonify(message='Post not found'), 404
-
-@bp.route('/posts/<id>', methods=['DELETE'])
-@login_required
-def delete(id):
-    db = get_db()
-
-    try:
-        db.delete(db.query(Post).filter(Post.id == id).one())
-        db.commit()
-        return '', 204
-    except Exception as e:
-        print(e)
-        db.rollback()
-        return jsonify(message='Post not found'), 404
+# Define routes for posts, upvotes, create, update, delete...

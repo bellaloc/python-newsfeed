@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
+from app.routes.api import bp as api_bp  # Import the api_bp blueprint
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-# Initialize Flask app
 app = Flask(__name__)
 
 # Configure SQLAlchemy
