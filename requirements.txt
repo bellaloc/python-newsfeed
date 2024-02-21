@@ -48,3 +48,4 @@ ml-dtypes==0.2.0
 numpy~=1.23.3
 sqlalchemy
 
+dotenv==0.0.5
