@@ -1,10 +1,16 @@
 # Importing necessary modules
 import os
-from dotenv import load_dotenv
 from flask import Flask
 from app.routes import home_bp, dashboard_bp, api_bp  # Importing blueprints from routes package
 from app.db import init_db  # Import the init_db function
 from app.utils import filters
+from dotenv import dotenv_values
+
+# Load environment variables from .env file
+env_vars = dotenv_values(".env")
+
+# Access specific environment variables
+db_url = env_vars.get("DB_URL")
 
 # Load environment variables from .env file
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
