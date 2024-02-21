@@ -46,4 +46,4 @@ markdown==3.5.2
 markupsafe==2.1.5
 ml-dtypes==0.2.0
 numpy~=1.23.3
-pythonnews
+
