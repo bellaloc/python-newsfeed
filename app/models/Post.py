@@ -1,16 +1,21 @@
+<<<<<<< HEAD
 from datetime import datetime
 from app.db import Base
 from .Vote import Vote
 from .Comment import Comment  # Import Comment model if not already imported
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+=======
+# app/models/Post.py
+from app.models import Base
+from sqlalchemy import Column, Integer, String, ForeignKey
+>>>>>>> main
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.hybrid import hybrid_property
 
 class Post(Base):
     __tablename__ = 'posts'
-    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+<<<<<<< HEAD
     title = Column(String(100), nullable=False)
     post_url = Column(String(100), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
@@ -23,11 +28,13 @@ class Post(Base):
     @hybrid_property
     def vote_count(self):
         return len(self.votes)
+=======
+    title = Column(String(255), nullable=False)
+    content = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship("User", back_populates="posts")
+    comments = relationship("Comment", back_populates="post")
+>>>>>>> main
 
-    @vote_count.expression
-    def vote_count(cls):
-        return (
-            select([func.count(Vote.id)])
-            .where(Vote.post_id == cls.id)
-            .label('vote_count')
-        )
+    def __repr__(self):
+        return f'<Post {self.title}>'
